@@ -13,42 +13,33 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Scanner;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-/**
- * Servlet implementation class WeatherServlet
- */
 public class WeatherServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public WeatherServlet() {
-        super();
 
-    }
- 
-
+    	public WeatherServlet() {
+        	super();
+    	}
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.sendRedirect("index.html");
 	}
 
-
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//https://api.openweathermap.org/data/2.5/weather?q=New%20York&appid=1dd4519b6cf7aa82028cc55ff2e2a3c9
-		String APIKey = "1dd4519b6cf7aa82028cc55ff2e2a3c9";
+		//Demo URL: https://api.openweathermap.org/data/2.5/weather?q=New%20York&appid=APIKEY
+		String APIKey = "Your API KEY";
+		
 		String city =  request.getParameter("city");
 		// Encode the city name to handle spaces and special characters
-	    String encodedCity = URLEncoder.encode(city, "UTF-8");
+	    	String encodedCity = URLEncoder.encode(city, "UTF-8");
 	    
-	    String apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + encodedCity + "&appid=" + APIKey;
+	    	String apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + encodedCity + "&appid=" + APIKey;
 		
 		
 		try {
-	        // Create URI and then convert it to URL
+	        //URL(String) is deprecated since Java 20. Instead of using new URL(String), we can use URI to create the URL object.
 	        URI uri = new URI(apiUrl);
 	        URL url = uri.toURL();
 
@@ -56,53 +47,53 @@ public class WeatherServlet extends HttpServlet {
 	        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 	        connection.setRequestMethod("GET");
 
-	        // Read data from network
+	        // Read data from the API
 	        InputStream inputStream = connection.getInputStream();
 	        InputStreamReader reader = new InputStreamReader(inputStream);
 
-	        // Store in string
 	        StringBuilder responseContent = new StringBuilder();
 
-	        // input from reader
 	        Scanner scanner = new Scanner(reader);
 	        while (scanner.hasNext()) {
 	            responseContent.append(scanner.nextLine());
 	        }
 	        scanner.close();
-//	        System.out.println(responseContent);
+			
+		//System.out.println(responseContent); To check whether the details fetching from API are coming or not
+			
 	        Gson gson = new Gson();
-            JsonObject jsonObject = gson.fromJson(responseContent.toString(), JsonObject.class);
+            	JsonObject jsonObject = gson.fromJson(responseContent.toString(), JsonObject.class);
             
-            //Date & Time
-            long dateTimestamp = jsonObject.get("dt").getAsLong() * 1000;
-            String date = new Date(dateTimestamp).toString();
+            	long dateTimestamp = jsonObject.get("dt").getAsLong() * 1000;
+            	String date = new Date(dateTimestamp).toString();
             
-            //Temperature
-            double temperatureKelvin = jsonObject.getAsJsonObject("main").get("temp").getAsDouble();
-            int temperatureCelsius = (int) (temperatureKelvin - 273.15);
+            	double temperatureKelvin = jsonObject.getAsJsonObject("main").get("temp").getAsDouble();
+            	int temperatureCelsius = (int) (temperatureKelvin - 273.15);
            
-            //Humidity
-            int humidity = jsonObject.getAsJsonObject("main").get("humidity").getAsInt();
+            	int humidity = jsonObject.getAsJsonObject("main").get("humidity").getAsInt();
             
-            //Wind Speed
-            double windSpeed = jsonObject.getAsJsonObject("wind").get("speed").getAsDouble();
+            	double windSpeed = jsonObject.getAsJsonObject("wind").get("speed").getAsDouble();
             
-            //Weather Condition
-            String weatherCondition = jsonObject.getAsJsonArray("weather").get(0).getAsJsonObject().get("main").getAsString();
+            	String weatherCondition = jsonObject.getAsJsonArray("weather").get(0).getAsJsonObject().get("main").getAsString();
             
-            // Set the data as request attributes (for sending to the jsp page)
-            request.setAttribute("date", date);
-            request.setAttribute("city", city);
-            request.setAttribute("temperature", temperatureCelsius);
-            request.setAttribute("weatherCondition", weatherCondition); 
-            request.setAttribute("humidity", humidity);    
-            request.setAttribute("windSpeed", windSpeed);
-            request.setAttribute("weatherData", responseContent.toString());
+            	// Sending data to the JSP page using request object
+            	request.setAttribute("date", date);
+            	request.setAttribute("city", city);
+            	request.setAttribute("temperature", temperatureCelsius);
+            	request.setAttribute("weatherCondition", weatherCondition); 
+            	request.setAttribute("humidity", humidity);    
+            	request.setAttribute("windSpeed", windSpeed);
+            	request.setAttribute("weatherData", responseContent.toString());
             
-            connection.disconnect();
+            	connection.disconnect();
 
-            // Forward the request to the weather.jsp page for rendering
-            request.getRequestDispatcher("index.jsp").forward(request, response);
+            	// Forward the request to the weather.jsp page for rendering
+			
+		//RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+		//rd.forward(request, response);
+			
+		//Above two lines of code can be written in one line  
+            	request.getRequestDispatcher("index.jsp").forward(request, response);
             
 	    } catch (Exception e) {
 	        e.printStackTrace();
