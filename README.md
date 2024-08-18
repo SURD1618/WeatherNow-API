@@ -79,17 +79,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 public class WeatherServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    public WeatherServlet() {
-        super();
-    }
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.sendRedirect("index.html");
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String APIKey = "Your API KEY";
         String city = request.getParameter("city");
         String encodedCity = URLEncoder.encode(city, "UTF-8");
