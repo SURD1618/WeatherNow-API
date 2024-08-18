@@ -235,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
 3. Update the `WeatherServlet.java` file with your OpenWeatherMap API key.
 4. Build the project using Maven.
 5. Deploy the `.war` file to your Apache Tomcat server.
-6. Access the application in your browser at `http://localhost:8080/weather-app/`.
+6. Access the application in your browser at `http://localhost:8080/WeatherServlet/`.
 
 ## Future Enhancements
 - **Add Forecast Data:** Extend the application to display a 5-day weather forecast.
