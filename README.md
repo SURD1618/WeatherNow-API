@@ -29,6 +29,7 @@ This project is a Java-based web application that provides real-time weather dat
 
 ### Servlet and JSP Integration
 - The `web.xml` file is crucial for configuring the servlet and defining the URL patterns that map to the servlet class. This allows for seamless communication between the client-side HTML and the server-side Java code.
+- Alternative Configuration with Annotations: Instead of defining servlet mappings in the `web.xml` deployment descriptor, you can utilize annotations like `@WebServlet("/WeatherServlet")` directly in your servlet class. This approach streamlines the setup process, eliminating the need for explicit entries in the `web.xml` file while still allowing seamless navigation from the `index.jsp` page to the servlet.
 - The `index.jsp` page is responsible for rendering the weather details fetched by the servlet. It uses JSP expressions to display the data dynamically.
 
 ## Main Code Files
