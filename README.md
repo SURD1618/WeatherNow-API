@@ -80,13 +80,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 public class WeatherServlet extends HttpServlet {
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.sendRedirect("index.html");
+    public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        res.sendRedirect("index.html");
     }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String APIKey = "Your API KEY";
-        String city = request.getParameter("city");
+        String city = req.getParameter("city");
         String encodedCity = URLEncoder.encode(city, "UTF-8");
         String apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + encodedCity + "&appid=" + APIKey;
 
@@ -98,15 +98,15 @@ public class WeatherServlet extends HttpServlet {
 
             InputStream inputStream = connection.getInputStream();
             InputStreamReader reader = new InputStreamReader(inputStream);
-            StringBuilder responseContent = new StringBuilder();
+            StringBuilder resContent = new StringBuilder();
             Scanner scanner = new Scanner(reader);
             while (scanner.hasNext()) {
-                responseContent.append(scanner.nextLine());
+                resContent.append(scanner.nextLine());
             }
             scanner.close();
 
             Gson gson = new Gson();
-            JsonObject jsonObject = gson.fromJson(responseContent.toString(), JsonObject.class);
+            JsonObject jsonObject = gson.fromJson(resContent.toString(), JsonObject.class);
 
             long dateTimestamp = jsonObject.get("dt").getAsLong() * 1000;
             String date = new Date(dateTimestamp).toString();
@@ -116,16 +116,16 @@ public class WeatherServlet extends HttpServlet {
             double windSpeed = jsonObject.getAsJsonObject("wind").get("speed").getAsDouble();
             String weatherCondition = jsonObject.getAsJsonArray("weather").get(0).getAsJsonObject().get("main").getAsString();
 
-            request.setAttribute("date", date);
-            request.setAttribute("city", city);
-            request.setAttribute("temperature", temperatureCelsius);
-            request.setAttribute("weatherCondition", weatherCondition);
-            request.setAttribute("humidity", humidity);
-            request.setAttribute("windSpeed", windSpeed);
-            request.setAttribute("weatherData", responseContent.toString());
+            req.setAttribute("date", date);
+            req.setAttribute("city", city);
+            req.setAttribute("temperature", temperatureCelsius);
+            req.setAttribute("weatherCondition", weatherCondition);
+            req.setAttribute("humidity", humidity);
+            req.setAttribute("windSpeed", windSpeed);
+            req.setAttribute("weatherData", resContent.toString());
 
             connection.disconnect();
-            request.getRequestDispatcher("index.jsp").forward(request, response);
+            req.getRequestDispatcher("index.jsp").forward(req, res);
 
         } catch (Exception e) {
             e.printStackTrace();
